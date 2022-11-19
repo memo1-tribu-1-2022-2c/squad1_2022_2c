@@ -3,3 +3,4 @@ Gunicorn
 flask_restful
 flask_apispec
 marshmallow
+Psycopg2-binary

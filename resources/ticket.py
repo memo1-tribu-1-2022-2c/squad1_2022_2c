@@ -1,14 +1,21 @@
 from flask_restful import Resource
 from flask_apispec.views import MethodResource
 from flask_apispec import doc, use_kwargs, marshal_with
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, base
+
+from services.ticket import TicketService
+
+ticket_service = TicketService()
 
 class TicketResponse(Schema):
-    ticket = fields.Str(default="Not found")
+    ticket_id = fields.Int(default=-1)
+    ticket_title = fields.Str(default='Not found')
 
 class TicketCreate(Schema):
     ticket = fields.String(required=True)
 
+class MultipleTicketsResponse(Schema):
+    tickets = fields.List(fields.Nested(TicketResponse))
 
 class TicketSearchResource(MethodResource, Resource):
 
@@ -18,19 +25,22 @@ class TicketSearchResource(MethodResource, Resource):
         '''
             Ticket response
         '''
-        return {'ticket': ticket_id}
+        return {'ticket_id': ticket_id, 'ticket_title': 'A title'}
 
 
 
 class TicketResource(MethodResource, Resource):
 
     @doc(description="returns all tickets", tags=["Tickets"])
-    @marshal_with(TicketResponse)
+    @marshal_with(MultipleTicketsResponse)
     def get(self):
         '''
             Returns all tickets
         '''
-        return {'ticket': 'alltickets'}
+        
+        values = ticket_service.get_all_tickets()
+
+        return {'tickets': values}
 
     @doc(description="Creates a new ticket", tags=['Tickets'])
     @use_kwargs(TicketCreate, location=('json'))
