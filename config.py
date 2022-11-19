@@ -3,6 +3,8 @@ from flask_restful import Api
 from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec import APISpec
 from flask_apispec.extension import FlaskApiSpec
+import psycopg2
+
 
 app = Flask(__name__)
 api = Api(app)
@@ -18,3 +20,11 @@ app.config.update({
     'APISPEC_SWAGGER_URL': '/swagger/',  # URI to access API Doc JSON 
     'APISPEC_SWAGGER_UI_URL': '/swagger-ui/'  # URI to access UI of API Doc
 })
+
+
+
+db = psycopg2.connect(database="soporte",
+                        host="oregon-postgres.render.com",
+                        user="soporte_user",
+                        password="6WqrfY2A46IdtKIsn903Ek3jCxKu6hS0",
+                        port="5432")
