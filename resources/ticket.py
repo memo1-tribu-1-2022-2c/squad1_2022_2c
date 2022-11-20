@@ -13,6 +13,7 @@ class TicketResponse(Schema):
 
 class TicketCreate(Schema):
     ticket = fields.String(required=True)
+    ticket_description = fields.Str(required=False)
 
 class MultipleTicketsResponse(Schema):
     tickets = fields.List(fields.Nested(TicketResponse))
@@ -49,6 +50,12 @@ class TicketResource(MethodResource, Resource):
         '''
             Creates a new ticket
         '''
+        try:
+            i = ticket_service.create_ticket(kwargs)
+            if(i == 0):
+                pass
+        except:
+            return 'error'
         return {
             'ticket': kwargs['ticket']
         }
