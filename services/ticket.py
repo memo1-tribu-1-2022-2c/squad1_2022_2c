@@ -19,4 +19,10 @@ class TicketService():
         db.commit()
         return self.cursor.rowcount
 
-
+    def update_ticket(self, kwargs):
+        update_query = """UPDATE tickets SET title = %s WHERE id = %s"""
+        record_to_update = (kwargs['ticket_title'], kwargs['ticket'])
+        self.cursor.execute(update_query, record_to_update)
+        db.commit()
+        return self.cursor.rowcount
+#hay que usar un cursor.close() y un connection.close()?
