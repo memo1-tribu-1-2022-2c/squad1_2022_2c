@@ -61,6 +61,8 @@ class TicketResource(MethodResource, Resource):
         return {
             'ticket': kwargs['ticket']
         }
+
+        
 class TicketSearchModify(MethodResource, Resource):
     @doc(description="Modify a ticket", tags=['Tickets'])
     @use_kwargs(TicketUpdate, location=('json'))
