@@ -13,6 +13,10 @@ class TicketService():
         return values
 
     def create_ticket(self, kwargs):
-        self.cursor.execute("INSERT INTO tickets VALUES ({kwargs[0]}, {kwargs[1]})")
+        insert_query = """INSERT INTO tickets (id, title) VALUES (%s, %s);"""
+        record_to_insert = (kwargs['ticket'], kwargs['ticket_title'])
+        self.cursor.execute(insert_query, record_to_insert)
+        db.commit()
+        return self.cursor.rowcount
 
 

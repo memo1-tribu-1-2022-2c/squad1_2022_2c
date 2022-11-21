@@ -13,7 +13,7 @@ class TicketResponse(Schema):
 
 class TicketCreate(Schema):
     ticket = fields.String(required=True)
-    ticket_description = fields.Str(required=False)
+    ticket_title = fields.Str(required=True)
 
 class MultipleTicketsResponse(Schema):
     tickets = fields.List(fields.Nested(TicketResponse))
