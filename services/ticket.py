@@ -16,10 +16,10 @@ class TicketService():
         return values
 
     def get_ticket(self,ticket_id):
-        get_query = """SELECT * FROM tickets WHERE id = %i"""
+        get_query = """SELECT * FROM tickets WHERE id = %s"""
         self.cursor.execute(get_query, ticket_id)
         ticket = self.cursor.fetchone()
-        return ticket
+        return {"ticket_id":ticket[0], "ticket_title": ticket[1]}
 
     def create_ticket(self, kwargs):
         insert_query = """INSERT INTO tickets (id, title) VALUES (%s, %s);"""
