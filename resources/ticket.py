@@ -30,7 +30,8 @@ class TicketSearchResource(MethodResource, Resource):
         '''
             Ticket response
         '''
-        return {'ticket_id': ticket_id, 'ticket_title': 'A title'}
+        ticket = ticket_service.get_ticket(ticket_id)
+        return {'ticket': ticket}
 
 
 
