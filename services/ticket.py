@@ -23,8 +23,7 @@ class TicketService():
         clients = requests\
         .get("https://anypoint.mulesoft.com/mocking/api/v1/sources/exchange/assets/754f50e8-20d8-4223-bbdc-56d50131d0ae/clientes-psa/1.0.0/m/api/clientes")\
         .json()
-        for value in clients:
-            print(kwargs['ticket_client'] == value['razon social'])
+        #No entiendo porque entra en el if si es siempre falso
         if({kwargs['ticket_client'] == value['razon social']} for value in clients):
             insert_query = """INSERT INTO tickets (start_dt, title, client, proyect_id, description, state, person_in_charge, end_dt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"""
             record_to_insert = (kwargs['ticket_start_dt'], kwargs['ticket_title'], kwargs['ticket_client'],\
