@@ -12,8 +12,14 @@ class TicketResponse(Schema):
     ticket_title = fields.Str(default='Not found')
 
 class TicketCreate(Schema):
-    ticket = fields.String(required=True)
+    ticket_start_dt = fields.Date(required=True)
     ticket_title = fields.Str(required=True)
+    ticket_client = fields.Str(required=True)
+    ticket_proyect_id = fields.Int(required=True)
+    ticket_description = fields.Str(required=False)
+    ticket_state = fields.Str(required=True)
+    ticket_person_in_charge = fields.Str(required=True)
+    ticket_end_dt = fields.Date(required=True)
 
 class TicketUpdate(Schema):
     ticket = fields.String(required=True)
@@ -31,7 +37,7 @@ class TicketSearchResource(MethodResource, Resource):
             Ticket response
         '''
         ticket = ticket_service.get_ticket(ticket_id)
-        return {'ticket': ticket}
+        return ticket
 
 
 
@@ -56,14 +62,14 @@ class TicketResource(MethodResource, Resource):
             Creates a new ticket
         '''
         try:
-            ticket_service.create_ticket(kwargs)
+            ticket_id = ticket_service.create_ticket(kwargs)
+            ticket = ticket_service.get_ticket(ticket_id)
+            return ticket
         except(Exception, psycopg2.DatabaseError) as error:
             print(error)
-        return {
-            'ticket': kwargs['ticket']
-        }
+            raise "Ticket could not be created"
 
-        
+
 class TicketSearchModify(MethodResource, Resource):
     @doc(description="Modify a ticket", tags=['Tickets'])
     @use_kwargs(TicketUpdate, location=('json'))
