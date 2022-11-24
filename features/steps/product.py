@@ -1,6 +1,5 @@
 from behave import given, when, then
-from model.product import Product
-
+from src.model.product import Product, Version, SUPORTED
 
 @given(u'A new product with name {name} and id {id}')
 def impl_step(context, name, id):
@@ -8,39 +7,50 @@ def impl_step(context, name, id):
 
 @when(u'It is tried to add it the system')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When It is tried to add it the system')
+    context.added = context.product.can_be_persisted()
 
 
 @then(u'It fails because it has no versions')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then It fails because it has no versions')
+    if context.added:
+        raise Exception("Should not be possible to add the product")
 
 
 @when(u'A version {version} is added to it')
 def step_impl(context, version):
-    raise NotImplementedError(u'STEP: When A version 1.1 is added to it')
+    version = Version(1, version, SUPORTED, context.product)
+    context.version = version
 
 
 @then(u'The version is associated with the product')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then The version is associated with the product')
+    if not context.version.associated_to(context.product):
+        raise Exception("Version was not associated to product")
 
 
 @then(u'The product gets added to the system')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then The product gets added to the system')
+    if not context.added:
+        raise Exception("Product was not added to the system")
 
 
 @given(u'Versions {versions} associated to it')
 def step_impl(context, versions):
-    raise NotImplementedError(u'STEP: Given Versions [2.3, 4.5, 6.7, 10.8] associated to it')
-
+    version_range = range(1, len(versions) + 1)
+    version_objects = []
+    for version_id, version_number in zip(version_range, versions):
+        new_version = Version(version_id, version_number, SUPORTED, context.product)
+        version_objects.append(new_version)
+    
+    context.versions = version_objects
 
 @when(u'The product versions are retrieved')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When The product versions are retrieve')
+    context.retrieved_versions = context.product.get_versions()
 
 
 @then(u'All versions of the product are shown')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then All versions of the product are shown')
+    for version, retrieved in zip(context.versions, context.retrieved_versions):
+        if version != retrieved:
+            raise Exception("A version was different from its retrieved counterpart")

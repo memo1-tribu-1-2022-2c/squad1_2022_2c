@@ -28,4 +28,4 @@ class ClientData():
 
     @staticmethod
     def get_by_reason(social_reason: str):
-        return ClientData._get_and_filter(lambda client: client['razon social'] == social_reason)    
+        return ClientData._get_and_filter(lambda client: client['razon social'] == social_reason)
