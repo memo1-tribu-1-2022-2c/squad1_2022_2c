@@ -19,6 +19,7 @@ class TicketService():
         ticket = self.cursor.fetchone()
         return {'ticket_id': ticket[0], 'ticket_title': ticket[2]}
 
+
     def create_ticket(self, kwargs):
         clients = requests\
         .get("https://anypoint.mulesoft.com/mocking/api/v1/sources/exchange/assets/754f50e8-20d8-4223-bbdc-56d50131d0ae/clientes-psa/1.0.0/m/api/clientes")\
