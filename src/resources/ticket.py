@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask_apispec.views import MethodResource
 from flask_apispec import doc, use_kwargs, marshal_with
 from marshmallow import Schema, fields, base
-from config import psycopg2
+from src.config import psycopg2
 from services.ticket import TicketService
 
 ticket_service = TicketService()

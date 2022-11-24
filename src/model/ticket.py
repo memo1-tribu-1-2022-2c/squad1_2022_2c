@@ -1,1 +1,4 @@
-from config import db
+class Ticket():
+
+    def __init__(self):
+        self.i = 'ticket'
