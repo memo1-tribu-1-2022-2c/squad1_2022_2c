@@ -1,4 +1,6 @@
 from config import db
+from services.client import ClientService
+from model.ticket import Ticket
 import requests
 
 class TicketService():
@@ -21,22 +23,12 @@ class TicketService():
 
 
     def create_ticket(self, kwargs):
-        clients = requests\
-        .get("https://anypoint.mulesoft.com/mocking/api/v1/sources/exchange/assets/754f50e8-20d8-4223-bbdc-56d50131d0ae/clientes-psa/1.0.0/m/api/clientes")\
-        .json()
-        #No entiendo porque entra en el if si es siempre falso
-        if({kwargs['ticket_client'] == value['razon social']} for value in clients):
-            insert_query = """INSERT INTO tickets (start_dt, title, client, proyect_id, description, state, person_in_charge, end_dt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"""
-            record_to_insert = (kwargs['ticket_start_dt'], kwargs['ticket_title'], kwargs['ticket_client'],\
-                int(kwargs['ticket_proyect_id']), kwargs['ticket_description'], kwargs['ticket_state'],\
-                kwargs['ticket_person_in_charge'], kwargs['ticket_end_dt'])
-            self.cursor.execute(insert_query, record_to_insert)
-            db.commit()
-            self.cursor.execute("SELECT MAX(id) FROM tickets;")
-            result = self.cursor.fetchone()
-            return result[0]
-        else:
+        client_service = ClientService()
+        if(client_service.get_by_param(kwargs['ticket_client']) == None):
             return -1
+        else:
+            ticket = Ticket.create(kwargs)
+            return ticket.get_id()
 
     def update_ticket(self, kwargs):
         update_query = """UPDATE tickets SET title = %s WHERE id = %s"""
