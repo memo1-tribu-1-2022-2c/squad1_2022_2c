@@ -6,7 +6,7 @@ class ProductService():
 
     
     def search_product(self, product_id: str):
-        return Product.search_product(product_id)
+        return Product.search_product(product_id).to_json()
 
     
     def new_product(self, **kwargs):

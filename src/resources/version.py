@@ -3,28 +3,31 @@ from flask_apispec.views import MethodResource
 from flask_apispec import doc, use_kwargs, marshal_with
 from marshmallow import Schema, fields
 
+from services.version import VersionService
 
+version_service = VersionService()
 
 class VersionResponse(Schema):
-    version = fields.Str(default="Version 1.0")
-    product = fields.Str(default="Some product")
+    number = fields.Str(default="Version 1.0")
+    version_id = fields.Int(default=0)
+    state = fields.Str(default="Deprecated")
 
+
+class VersionListResponse(Schema):
+    versions = fields.List(fields.Nested(VersionResponse))
 
 class VersionCreate(Schema):
-    version = fields.Str(default="Some version number")
-    product = fields.Str(default="Product for which the version belongs")
+    number = fields.Str(required=True)
+    product_id = fields.Int(required=True)
+
 
 
 class VersionSearchResource(MethodResource, Resource):
 
     @doc(description="Returns a version from a product", tags=['Versions'])
-    @marshal_with(VersionResponse)
-    def get(self, version_id):
-        return {
-            'version': 'version:' + version_id,
-            'product': 'El que mas te guste'
-        }
-
+    @marshal_with(VersionListResponse)
+    def get(self, product_id):
+        return {'versions': version_service.get_by_product_id(product_id)}
 
 class VersionResource(MethodResource, Resource):
 
@@ -34,7 +37,4 @@ class VersionResource(MethodResource, Resource):
     @use_kwargs(VersionCreate)
     @marshal_with(VersionResponse)
     def post(self, **kwargs):
-        return {
-            'version': kwargs['version'],
-            'product': kwargs['product']
-        }
+        return version_service.store_new_version(**kwargs)

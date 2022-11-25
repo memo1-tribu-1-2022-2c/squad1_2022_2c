@@ -32,7 +32,7 @@ api.add_resource(ProductResource, '/product')
     Version Resources
 '''
 
-api.add_resource(VersionSearchResource, '/version/<string:version_id>')
+api.add_resource(VersionSearchResource, '/version/<int:product_id>')
 api.add_resource(VersionResource, '/version')
 
 # Register Resources for swagger

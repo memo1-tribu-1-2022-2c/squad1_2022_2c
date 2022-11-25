@@ -1,9 +1,11 @@
-from ..data_objects.product import ProductData
+from data_objects.product import ProductData
+from data_objects.version import VersionData
 
 SUPORTED = 'Con soporte'
 DEPRECATED = 'Deprecada'
 
 products_db = ProductData()
+versions_db = VersionData()
 
 class Product():
 
@@ -11,7 +13,6 @@ class Product():
         self.id = id
         self.name = name
         self.versions = []
-        self.persisted = False
 
     def to_json(self) -> dict:
         return {
@@ -41,7 +42,7 @@ class Product():
         if not result:
             return None
         
-        return Product(result['name'], result['id']).to_json()
+        return Product(result['name'], result['id'])
 
     def store(self):
         products_db.store_new_product(self)
@@ -53,9 +54,19 @@ class Version():
         self.number = number
         self.state = state
         self.product = product.id
-        self.persisted = False
 
         product.add_version(self)
+
+    
+        
+
+    def to_json(self) -> dict:
+
+        return {
+            'version_id': self.id,
+            'number': self.number,
+            'state': self.state
+        }
 
     def associated_to(self, product: Product) -> bool:
 
@@ -65,5 +76,11 @@ class Version():
         """
             Persists the version if not persisted (changed or newly created)
         """
-        if self.persisted:
-            return
+        versions_db.store_new_version(self)
+
+    @staticmethod
+    def retrieve_by_product(product_id: int):
+        data = versions_db.retrieve_version_by_product(product_id)
+        product = Product.search_product(product_id)
+        
+        return [Version(value[0], value[1], value[2], product) for value in data]

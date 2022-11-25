@@ -1,5 +1,5 @@
 from behave import given, when, then
-from src.model.product import Product, Version, SUPORTED
+from model.product import Product, Version, SUPORTED
 
 @given(u'A new product with name {name} and id {id}')
 def impl_step(context, name, id):
