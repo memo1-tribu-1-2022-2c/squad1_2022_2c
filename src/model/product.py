@@ -1,5 +1,4 @@
-from data_objects.product import ProductData
-
+from ..data_objects.product import ProductData
 
 SUPORTED = 'Con soporte'
 DEPRECATED = 'Deprecada'
