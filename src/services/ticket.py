@@ -9,17 +9,13 @@ class TicketService():
         self.cursor = db.cursor()
 
     def get_all_tickets(self):
-        
-        self.cursor.execute("SELECT * FROM tickets;")
-        tickets = self.cursor.fetchall()
-        values = [{'ticket_id': value[0], 'ticket_title': value[2]} for value in tickets]
+        tickets = Ticket.get_all()
+        values = [{'ticket_id': value.get_id(), 'ticket_title': value.get_title()} for value in tickets]
         return values
 
     def get_ticket(self,ticket_id):
-        get_query = """SELECT * FROM tickets WHERE id = %s"""
-        self.cursor.execute(get_query, (ticket_id,))
-        ticket = self.cursor.fetchone()
-        return {'ticket_id': ticket[0], 'ticket_title': ticket[2]}
+        ticket = Ticket.from_id(ticket_id)
+        return {'ticket_id': ticket.get_id(), 'ticket_title': ticket.get_title()}
 
 
     def create_ticket(self, kwargs):

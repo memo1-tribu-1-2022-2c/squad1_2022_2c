@@ -23,7 +23,14 @@ class TicketCreate(Schema):
 
 class TicketUpdate(Schema):
     ticket = fields.String(required=True)
+    ticket_start_dt = fields.Date(required=True)
     ticket_title = fields.Str(required=True)
+    ticket_client = fields.Str(required=True)
+    ticket_proyect_id = fields.Int(required=True)
+    ticket_description = fields.Str(required=True)
+    ticket_state = fields.Str(required=True)
+    ticket_person_in_charge = fields.Str(required=True)
+    ticket_end_dt = fields.Date(required=True)
 
 class MultipleTicketsResponse(Schema):
     tickets = fields.List(fields.Nested(TicketResponse))

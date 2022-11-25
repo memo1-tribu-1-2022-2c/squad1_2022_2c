@@ -1,5 +1,7 @@
 from data_objects.ticket import TicktData
 
+ticket_db = TicktData()
+
 class Ticket():
 
     def __init__(self, id: int, start_dt: str, title: str, client: str, proyect_id: int,\
@@ -16,13 +18,23 @@ class Ticket():
 
     def get_id(self):
         return self.id
+
+    def get_title(self):
+        return self.title
+
+    def get_all() -> list:
+        tickets = ticket_db.get_all()
+        all_tickets = []
+        for ticket in tickets:
+            all_tickets.append(Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8]))
+        return all_tickets
     
     @staticmethod
     def from_id(ticket_id: int):
-        ticket = TicktData.get_by_id(ticket_id)
+        ticket = ticket_db.get_by_id(ticket_id)
         return Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8])
 
     @staticmethod
-    def create(**kwargs):
-        ticket = TicktData.create(kwargs)
+    def create(kwargs):
+        ticket = ticket_db.create(kwargs)
         return Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8])
