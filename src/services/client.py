@@ -20,7 +20,7 @@ class ClientService():
             
             id = int(param)
             return Client.from_id(id)
-        finally:
+        except:
             
             if self.is_cuit(param):
                 
