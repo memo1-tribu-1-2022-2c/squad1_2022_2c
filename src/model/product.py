@@ -1,7 +1,10 @@
+from data_objects.product import ProductData
+
 
 SUPORTED = 'Con soporte'
 DEPRECATED = 'Deprecada'
 
+products_db = ProductData()
 
 class Product():
 
@@ -9,6 +12,14 @@ class Product():
         self.id = id
         self.name = name
         self.versions = []
+        self.persisted = False
+
+    def to_json(self) -> dict:
+        return {
+            'product': self.name,
+            'product_id': self.id,
+            'versions': self.versions
+        }
 
     def can_be_persisted(self) -> bool:
 
@@ -24,7 +35,17 @@ class Product():
     def get_versions(self) -> list:
 
         return self.versions
+
+    @staticmethod
+    def search_product(product_id: str):
+        result = products_db.get_product_by_id(product_id)
+        if not result:
+            return None
         
+        return Product(result['name'], result['id']).to_json()
+
+    def store(self):
+        products_db.store_new_product(self)
     
 class Version():
 
