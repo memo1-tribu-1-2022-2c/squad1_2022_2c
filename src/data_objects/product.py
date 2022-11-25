@@ -34,7 +34,8 @@ class ProductData():
         params = (product_id, )
         self.cursor.execute(query, params)
         result = self.cursor.fetchone()
-        if len(result) == 0:
+        
+        if not result:
             return None
         
         return {

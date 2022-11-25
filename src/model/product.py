@@ -46,7 +46,11 @@ class Product():
         if not result:
             return None
         
-        return Product(result['name'], result['id'])
+        versions = versions_db.retrieve_version_by_product(int(product_id))
+        product = Product(result['name'], result['id'])
+        
+        [Version(value[0], value[1], value[2], product) for value in versions]
+        return product
 
     def store(self):
         products_db.store_new_product(self)
