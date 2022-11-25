@@ -1,5 +1,4 @@
-from model.product import Product
-
+from model.product import Product, Version, SUPORTED
 
 
 class ProductService():
@@ -12,7 +11,7 @@ class ProductService():
     def new_product(self, **kwargs):
         name = kwargs['product']
         product = Product(name, 0)
-
+        versions = [Version(0, value['number'], SUPORTED, product) for value in kwargs['versions']]
         product.store()
         
 
