@@ -23,20 +23,12 @@ class TicketCreate(Schema):
     ticket_end_dt = fields.Date(required=True)
 
 class TicketUpdate(Schema):
-<<<<<<< HEAD
     ticket_id = fields.String(required=True)
     ticket_start_dt = fields.Date(required=False)
     ticket_title = fields.Str(required=False)
     ticket_client_id = fields.Int(required=False)
     ticket_proyect_id = fields.Int(required=False)
     ticket_version_id = fields.Int(required=False)
-=======
-    ticket = fields.String(required=True)
-    ticket_start_dt = fields.Date(required=False)
-    ticket_title = fields.Str(required=False)
-    ticket_client = fields.Str(required=False)
-    ticket_proyect_id = fields.Int(required=True)
->>>>>>> 284dc0196b61a1facc25f41eb0248c0dbb0a65e0
     ticket_description = fields.Str(required=False)
     ticket_state = fields.Str(required=False)
     ticket_person_in_charge = fields.Str(required=False)
