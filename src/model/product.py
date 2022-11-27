@@ -18,8 +18,12 @@ class Product():
         return {
             'product': self.name,
             'product_id': self.id,
-            'versions': self.versions
+            'versions': [version.to_json() for version in self.versions]
         }
+
+    def change_id(self, new_id: int):
+        self.versions = [version.set_product_id(new_id) for version in self.versions]
+        self.id = new_id
 
     def can_be_persisted(self) -> bool:
 
@@ -42,10 +46,16 @@ class Product():
         if not result:
             return None
         
-        return Product(result['name'], result['id'])
+        versions = versions_db.retrieve_version_by_product(int(product_id))
+        product = Product(result['name'], result['id'])
+        
+        [Version(value[0], value[1], value[2], product) for value in versions]
+        return product
 
     def store(self):
         products_db.store_new_product(self)
+        
+        [version.persist() for version in self.versions]
     
 class Version():
 
@@ -58,7 +68,9 @@ class Version():
         product.add_version(self)
 
     
-        
+    def set_product_id(self, new_id: int):
+        self.product = new_id
+        return self
 
     def to_json(self) -> dict:
 
