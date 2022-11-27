@@ -26,6 +26,15 @@ class TicketService():
             ticket = Ticket.create(kwargs)
             return ticket.get_id()
 
+    def find_query(kwargs):
+        query = ""
+        id = kwargs.pop('ticket_id')
+        for i, label, value in kwargs.items:
+            query += f"{label}={value}"
+            if(i < len(kwargs.keys())):
+                query += ", "
+        return query,id
+
     def update_ticket(self, kwargs):
         ticket = Ticket.update(kwargs)
         return ticket.get_id()
