@@ -14,23 +14,25 @@ class TicketResponse(Schema):
 class TicketCreate(Schema):
     ticket_start_dt = fields.Date(required=True)
     ticket_title = fields.Str(required=True)
-    ticket_client = fields.Str(required=True)
+    ticket_client_id = fields.Int(required=True)
     ticket_proyect_id = fields.Int(required=True)
+    ticket_version_id = fields.Int(required=True)
     ticket_description = fields.Str(required=False)
     ticket_state = fields.Str(required=True)
     ticket_person_in_charge = fields.Str(required=True)
     ticket_end_dt = fields.Date(required=True)
 
 class TicketUpdate(Schema):
-    ticket = fields.String(required=True)
-    ticket_start_dt = fields.Date(required=True)
-    ticket_title = fields.Str(required=True)
-    ticket_client = fields.Str(required=True)
-    ticket_proyect_id = fields.Int(required=True)
-    ticket_description = fields.Str(required=True)
-    ticket_state = fields.Str(required=True)
-    ticket_person_in_charge = fields.Str(required=True)
-    ticket_end_dt = fields.Date(required=True)
+    ticket_id = fields.String(required=True)
+    ticket_start_dt = fields.Date(required=False)
+    ticket_title = fields.Str(required=False)
+    ticket_client_id = fields.Int(required=False)
+    ticket_proyect_id = fields.Int(required=False)
+    ticket_version_id = fields.Int(required=False)
+    ticket_description = fields.Str(required=False)
+    ticket_state = fields.Str(required=False)
+    ticket_person_in_charge = fields.Str(required=False)
+    ticket_end_dt = fields.Date(required=False)
 
 class MultipleTicketsResponse(Schema):
     tickets = fields.List(fields.Nested(TicketResponse))
@@ -81,14 +83,15 @@ class TicketSearchModify(MethodResource, Resource):
     @doc(description="Modify a ticket", tags=['Tickets'])
     @use_kwargs(TicketUpdate, location=('json'))
     @marshal_with(TicketResponse)
-    def post(self, **kwargs):
+    def patch(self, **kwargs):
         '''
             Update a ticket
         '''
         try:
-            ticket_service.update_ticket(kwargs)
+            ticket_id = ticket_service.update_ticket(kwargs)
+            return ticket_id
         except(Exception, psycopg2.DatabaseError) as error:
             print(error)
         return {
-            'ticket': kwargs['ticket']
+            'ticket': kwargs['ticket_id']
         }

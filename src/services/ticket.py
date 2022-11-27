@@ -20,15 +20,12 @@ class TicketService():
 
     def create_ticket(self, kwargs):
         client_service = ClientService()
-        if(client_service.get_by_param(kwargs['ticket_client']) == None):
+        if(client_service.get_by_param(kwargs['ticket_client_id']) == None):
             return -1
         else:
             ticket = Ticket.create(kwargs)
             return ticket.get_id()
 
     def update_ticket(self, kwargs):
-        update_query = """UPDATE tickets SET title = %s WHERE id = %s"""
-        record_to_update = (kwargs['ticket_title'], kwargs['ticket'])
-        self.cursor.execute(update_query, record_to_update)
-        db.commit()
-        return self.cursor.rowcount
+        ticket = Ticket.update(kwargs)
+        return ticket.get_id()

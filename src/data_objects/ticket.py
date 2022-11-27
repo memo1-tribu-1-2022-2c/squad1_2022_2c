@@ -18,9 +18,9 @@ class TicktData():
         return ticket
 
     def create(self, kwargs):
-        insert_query = f"INSERT INTO {self.table} (start_dt, title, client, proyect_id, description, state, person_in_charge, end_dt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"
-        record_to_insert = (kwargs['ticket_start_dt'], kwargs['ticket_title'], kwargs['ticket_client'],\
-        kwargs['ticket_proyect_id'], kwargs['ticket_description'], kwargs['ticket_state'],\
+        insert_query = f"INSERT INTO {self.table} (start_dt, title, client_id, proyect_id, version_id, description, state, person_in_charge, end_dt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        record_to_insert = (kwargs['ticket_start_dt'], kwargs['ticket_title'], kwargs['ticket_client_id'],\
+        kwargs['ticket_proyect_id'], kwargs['ticket_version_id'], kwargs['ticket_description'], kwargs['ticket_state'],\
         kwargs['ticket_person_in_charge'], kwargs['ticket_end_dt'])
         self.cursor.execute(insert_query, record_to_insert)
         db.commit()
@@ -29,10 +29,18 @@ class TicktData():
         return ticket
     
     def update(self, kwargs):
-        update_query = f"UPDATE {self.table} SET start_dt = %s, title = %s, client = %s, proyect_id = %s, description = %s\
-            , state = %s, person_in_charge = %s, end_dt = %s,  WHERE id = %s"
-        record_to_update = (kwargs['ticket_start_dt'], kwargs['ticket_title'], kwargs['ticket_client'],\
-        kwargs['ticket_proyect_id'], kwargs['ticket_description'], kwargs['ticket_state'],\
-        kwargs['ticket_person_in_charge'], kwargs['ticket_end_dt'])
-        self.cursor.execute(update_query, record_to_update)
+        update_query = """UPDATE tickets SET %s WHERE id = %s"""
+        record_to_update = (kwargs['ticket_title'], kwargs['ticket'])
+        query, id = self.find_query(kwargs)
+        self.cursor.execute(query, id)
         db.commit()
+        return self.get_by_id(id)
+        
+    def find_query(kwargs):
+        query = ""
+        id = kwargs.pop('ticket_id')
+        for i, label, value in kwargs.items:
+            query += f"{label}={value}"
+            if(i < len(kwargs.keys())):
+                query += ", "
+        return query,id
