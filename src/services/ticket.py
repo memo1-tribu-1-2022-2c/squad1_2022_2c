@@ -26,9 +26,18 @@ class TicketService():
             ticket = Ticket.create(kwargs)
             return ticket.get_id()
 
+    def find_query(kwargs):
+        query = ""
+        id = kwargs.pop('ticket_id')
+        for i, label, value in kwargs.items:
+            query += f"{label}={value}"
+            if(i < len(kwargs.keys())):
+                query += ", "
+        return query,id
+
     def update_ticket(self, kwargs):
-        update_query = """UPDATE tickets SET title = %s WHERE id = %s"""
+        update_query = """UPDATE tickets SET %s WHERE id = %s"""
         record_to_update = (kwargs['ticket_title'], kwargs['ticket'])
-        self.cursor.execute(update_query, record_to_update)
+        self.cursor.execute(find_query(kwargs))
         db.commit()
         return self.cursor.rowcount
