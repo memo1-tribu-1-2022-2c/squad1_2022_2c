@@ -18,8 +18,12 @@ class Product():
         return {
             'product': self.name,
             'product_id': self.id,
-            'versions': self.versions
+            'versions': [version.to_json() for version in self.versions]
         }
+
+    def change_id(self, new_id: int):
+        self.versions = [version.set_product_id(new_id) for version in self.versions]
+        self.id = new_id
 
     def can_be_persisted(self) -> bool:
 
@@ -42,10 +46,20 @@ class Product():
         if not result:
             return None
         
-        return Product(result['name'], result['id'])
+        versions = versions_db.retrieve_version_by_product(int(product_id))
+        product = Product(result['name'], result['id'])
+        
+        [Version(value[0], value[1], value[2], product) for value in versions]
+        return product
+
+    @staticmethod
+    def search_products(product_ids: list[str]):
+        return [Product.search_product(product_id) for product_id in product_ids]
 
     def store(self):
         products_db.store_new_product(self)
+        
+        [version.persist() for version in self.versions]
     
 class Version():
 
@@ -58,7 +72,9 @@ class Version():
         product.add_version(self)
 
     
-        
+    def set_product_id(self, new_id: int):
+        self.product = new_id
+        return self
 
     def to_json(self) -> dict:
 
@@ -84,3 +100,37 @@ class Version():
         product = Product.search_product(product_id)
         
         return [Version(value[0], value[1], value[2], product) for value in data]
+
+    @staticmethod
+    def retrieve_by_id(version_id: int):
+        data = versions_db.retrieve_version_by_id(version_id)
+        
+        product = Product.search_product(data[3])
+        
+        version = Version(data[0], data[1], data[2], product)
+
+        return version
+
+    @staticmethod
+    def retrieve_all_by_ids(version_ids: list[str]):
+        versions = versions_db.retrieve_all_by_id(version_ids)
+        product_ids = set([version[3] for version in versions])
+        productos = Product.search_products(product_ids)
+        
+        mapa_versiones = {}
+
+        for product_id in product_ids:
+            product_versions = []
+            for version in versions:
+                if version[3] == product_id:
+                    product_versions.append(version[0])
+            mapa_versiones[product_id] = product_versions
+        
+        for product in productos:
+            todas_versiones = product.get_versions()
+            versiones_cliente = mapa_versiones[product.id]
+            
+            product.versions = list(filter(lambda version: version.id in versiones_cliente, todas_versiones))
+            
+        
+        return productos

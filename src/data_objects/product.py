@@ -15,17 +15,13 @@ class ProductData():
     def store_new_product(self, product):
         if product.can_be_persisted():
             values, params = self.serialize_product(product)
-            self.cursor.execute(f"INSERT INTO {self.table} VALUES{values}", params)
+            self.cursor.execute(f"INSERT INTO {self.table}(nombre) VALUES{values}", params)
+            self.cursor.execute("SELECT LASTVAL()")
             [new_id] = self.cursor.fetchone()
-            product.id = new_id
+            product.change_id(new_id)
             db.commit()
         else:
-            values, params = self.serialize_product(product)
-            self.cursor.execute(f"INSERT INTO {self.table} (nombre) VALUES{values}", params)
-            db.commit()
-            self.cursor.execute("SELECT LASTVAL()")
-            product.id = self.cursor.fetchone()[0]
-            #raise Exception("Product has no versions associated")
+            raise Exception("Product has no versions associated")
 
         
 
@@ -38,7 +34,8 @@ class ProductData():
         params = (product_id, )
         self.cursor.execute(query, params)
         result = self.cursor.fetchone()
-        if len(result) == 0:
+        
+        if not result:
             return None
         
         return {

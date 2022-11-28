@@ -20,3 +20,13 @@ class VersionData():
         query = f"SELECT * FROM {self.table} WHERE producto=%s"
         self.cursor.execute(query, args)
         return self.cursor.fetchall()
+
+    def retrieve_version_by_id(self, version_id: int):
+        args = (version_id,)
+        query = f"SELECT * FROM {self.table} WHERE id=%s"
+        self.cursor.execute(query, args)
+        return self.cursor.fetchone()
+
+    def retrieve_all_by_id(self, version_ids: list[int]):
+
+        return [self.retrieve_version_by_id(version_id) for version_id in version_ids]
