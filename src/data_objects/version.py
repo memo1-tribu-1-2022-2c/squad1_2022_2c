@@ -27,6 +27,6 @@ class VersionData():
         self.cursor.execute(query, args)
         return self.cursor.fetchone()
 
-    def retrieve_all_by_id(self, version_ids: list[int]):
+    def retrieve_all_by_id(self, version_ids: list):
 
         return [self.retrieve_version_by_id(version_id) for version_id in version_ids]
