@@ -1,6 +1,6 @@
 from config import api, app, docs
 from resources.ticket import TicketResource, TicketSearchResource, TicketSearchModify
-from resources.client import ClientSearchResource, ClientDumpResource
+from resources.client import ClientSearchResource, ClientDumpResource, ClientWithVersionsResource
 from resources.product import ProductResource, ProductSearchResource
 from resources.version import VersionResource, VersionSearchResource
 
@@ -20,7 +20,7 @@ api.add_resource(TicketSearchModify, '/ticket/<string:ticket_id>')
 
 api.add_resource(ClientSearchResource, '/client/search')
 api.add_resource(ClientDumpResource, '/clients')
-
+api.add_resource(ClientWithVersionsResource, '/client/products')
 
 '''
     Product Resources
@@ -50,6 +50,8 @@ docs.register(TicketSearchModify)
 '''
 docs.register(ClientSearchResource)
 docs.register(ClientDumpResource)
+docs.register(ClientWithVersionsResource)
+
 
 '''
     Product docs

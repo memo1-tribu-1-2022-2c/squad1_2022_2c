@@ -22,6 +22,7 @@ class VersionCreate(Schema):
 
 
 
+
 class VersionSearchResource(MethodResource, Resource):
 
     @doc(description="Returns a version from a product", tags=['Versions'])

@@ -31,8 +31,6 @@ class ProductSearchResource(MethodResource, Resource):
         return result
 
 
-
-
 class ProductResource(MethodResource, Resource):
 
     @doc(description="Creates a new product", tags=["Products"])
@@ -41,4 +39,3 @@ class ProductResource(MethodResource, Resource):
     def post(self, **kwargs):
         new_product = product_service.new_product(**kwargs)
         return new_product
-        
