@@ -85,11 +85,18 @@ class ClientDumpResource(MethodResource, Resource):
 
     @doc(description="Returns all clients in the system", tags=["Clients"])
     @marshal_with(ClientListSchema)
+    @marshal_with(ClientNotFound, code='404')
     def get(self):
-        clients = client_service.get_all()
+        try:
+
+            clients = client_service.get_all()
         
-        return {
-            'clients': [client.to_json() for client in clients]
-        }
+            return {
+                'clients': [client.to_json() for client in clients]
+            }
+        except:
+            return {
+                'error': 'Some unexpected error occured'
+            }, '404'
 
     
