@@ -19,21 +19,14 @@ class TicketService():
 
 
     def create_ticket(self, kwargs):
-        client_service = ClientService()
-        if(client_service.get_by_param(kwargs['ticket_client_id']) == None):
+        id = kwargs['ticket_project_id']
+        proyect = requests.get(f"https://squad2-2022-2c.herokuapp.com/api/v1/projects/{id}").json()
+        if(proyect['clientId'] != kwargs['ticket_client_id'] or proyect['versionId'] != kwargs['ticket_version_id']):
             return -1
         else:
             ticket = Ticket.create(kwargs)
             return ticket.get_id()
 
-    def find_query(kwargs):
-        query = ""
-        id = kwargs.pop('ticket_id')
-        for i, label, value in kwargs.items:
-            query += f"{label}={value}"
-            if(i < len(kwargs.keys())):
-                query += ", "
-        return query,id
 
     def update_ticket(self, kwargs):
         ticket = Ticket.update(kwargs)
