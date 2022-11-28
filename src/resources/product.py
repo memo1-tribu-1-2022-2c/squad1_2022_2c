@@ -16,9 +16,14 @@ class ProductResponse(Schema):
     product_id = fields.Int(default=0)
     versions = fields.List(fields.Nested(VersionResponse))
 
+class ProductModifySchema(Schema):
+    product_id = fields.Str(required=True)
+    name = fields.Str(required=False)
+
 class ProductCreate(Schema):
     product = fields.Str(default="Some product name")
     versions = fields.List(fields.Nested(ProductVersion))
+
 
 
 class ProductErrorSchema(Schema):
@@ -53,4 +58,16 @@ class ProductResource(MethodResource, Resource):
 
             return {
                 'error': 'Could not create Product'
+            }, '404'
+
+    @doc(description="Changes the name of a product", tags=["Products"])
+    @use_kwargs(ProductModifySchema)
+    @marshal_with(ProductResponse)
+    @marshal_with(ProductErrorSchema, code='404')
+    def patch(self, **kwargs):
+        try:
+            return product_service.update_product(**kwargs)
+        except Exception as exception:
+            return {
+                'error': exception.args[0]
             }, '404'

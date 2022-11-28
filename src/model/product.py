@@ -61,6 +61,9 @@ class Product():
         
         [version.persist() for version in self.versions]
     
+    def update(self):
+        products_db.update_product(self)
+
 class Version():
 
     def __init__(self, id: int, number: str, state: str, product: Product):
