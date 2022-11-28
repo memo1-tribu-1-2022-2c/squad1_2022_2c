@@ -16,3 +16,20 @@ class ProductService():
         
 
         return product.to_json()
+
+    def update_product(self, product_id: str, name=None):
+        
+        try: 
+            product = Product.search_product(product_id)
+        except:
+            raise Exception("Product not found")
+
+        if name:
+            product.name = name
+
+        try:
+            product.update()
+        except:
+            raise Exception("Could not update product")
+
+        return product.to_json()

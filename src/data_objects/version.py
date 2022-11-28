@@ -30,3 +30,13 @@ class VersionData():
     def retrieve_all_by_id(self, version_ids: list):
 
         return [self.retrieve_version_by_id(version_id) for version_id in version_ids]
+
+    def update_version(self, version):
+        args = (version.number, version.state,version.id)
+        query = f"""
+                UPDATE {self.table}
+                SET numero=%s, estado=%s
+                WHERE id=%s
+                """
+        self.cursor.execute(query, args)
+        db.commit()

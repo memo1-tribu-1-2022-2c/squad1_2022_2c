@@ -61,6 +61,9 @@ class Product():
         
         [version.persist() for version in self.versions]
     
+    def update(self):
+        products_db.update_product(self)
+
 class Version():
 
     def __init__(self, id: int, number: str, state: str, product: Product):
@@ -76,6 +79,10 @@ class Version():
         self.product = new_id
         return self
 
+    def change_state(self):
+
+        self.state = SUPORTED if self.state == DEPRECATED else DEPRECATED
+
     def to_json(self) -> dict:
 
         return {
@@ -83,6 +90,9 @@ class Version():
             'number': self.number,
             'state': self.state
         }
+
+    def update(self):
+        versions_db.update_version(self)
 
     def associated_to(self, product: Product) -> bool:
 

@@ -26,7 +26,13 @@ class ProductData():
         
 
     def update_product(self, product):
-        pass
+        args = (product.name, product.id,)
+        query = f"""UPDATE {self.table}
+                    SET nombre=%s
+                    WHERE id=%s
+                """
+        self.cursor.execute(query, args)
+        db.commit()
 
     def get_product_by_id(self, product_id: str) -> dict:
         query = f"SELECT * FROM {self.table} WHERE id=%s"
