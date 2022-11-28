@@ -53,7 +53,7 @@ class Product():
         return product
 
     @staticmethod
-    def search_products(product_ids: list[str]):
+    def search_products(product_ids: list):
         return [Product.search_product(product_id) for product_id in product_ids]
 
     def store(self):
@@ -112,7 +112,7 @@ class Version():
         return version
 
     @staticmethod
-    def retrieve_all_by_ids(version_ids: list[str]):
+    def retrieve_all_by_ids(version_ids: list):
         versions = versions_db.retrieve_all_by_id(version_ids)
         product_ids = set([version[3] for version in versions])
         productos = Product.search_products(product_ids)
