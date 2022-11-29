@@ -1,4 +1,4 @@
-from config import db
+from config import db, connect_and_return
 
 class ProductData():
 
@@ -13,6 +13,7 @@ class ProductData():
         return values, params
 
     def store_new_product(self, product):
+        self.renew_cursor()
         if product.can_be_persisted():
             values, params = self.serialize_product(product)
             self.cursor.execute(f"INSERT INTO {self.table}(nombre) VALUES{values}", params)
@@ -26,6 +27,7 @@ class ProductData():
         
 
     def update_product(self, product):
+        self.renew_cursor()
         args = (product.name, product.id,)
         query = f"""UPDATE {self.table}
                     SET nombre=%s
@@ -35,6 +37,7 @@ class ProductData():
         db.commit()
 
     def get_product_by_id(self, product_id: str) -> dict:
+        self.renew_cursor()
         query = f"SELECT * FROM {self.table} WHERE id=%s"
         
         params = (product_id, )
@@ -49,5 +52,7 @@ class ProductData():
             'name': result[1]
         }
 
-    def get_products_by_name(self, product_name: str) -> list:
-        pass
+    def renew_cursor(self):
+        if self.cursor.closed:
+            data_base = connect_and_return()
+            self.cursor = data_base.cursor()
