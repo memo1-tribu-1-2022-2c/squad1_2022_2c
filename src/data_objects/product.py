@@ -1,4 +1,4 @@
-from config import db, connect_and_return, try_commit
+from config import db, connect_and_return, try_commit, rollback
 
 class ProductData():
 
@@ -16,7 +16,13 @@ class ProductData():
         self.renew_cursor()
         if product.can_be_persisted():
             values, params = self.serialize_product(product)
-            self.cursor.execute(f"INSERT INTO {self.table}(nombre) VALUES{values}", params)
+            try:
+
+                self.cursor.execute(f"INSERT INTO {self.table}(nombre) VALUES{values}", params)
+            except:
+                rollback()
+                raise Exception("Could not create new product")
+
             self.cursor.execute("SELECT LASTVAL()")
             [new_id] = self.cursor.fetchone()
             product.change_id(new_id)
@@ -33,7 +39,13 @@ class ProductData():
                     SET nombre=%s
                     WHERE id=%s
                 """
-        self.cursor.execute(query, args)
+        try:
+
+            self.cursor.execute(query, args)
+        except:
+            rollback()
+            raise Exception(f"Could not update product: {product.id}")
+
         try_commit()
 
     def get_product_by_id(self, product_id: str) -> dict:
@@ -41,7 +53,14 @@ class ProductData():
         query = f"SELECT * FROM {self.table} WHERE id=%s"
         
         params = (product_id, )
-        self.cursor.execute(query, params)
+        try:
+
+            self.cursor.execute(query, params)
+
+        except:
+            rollback()
+            raise Exception(f"Could not get product: {product_id}")
+            
         result = self.cursor.fetchone()
         try_commit()
         if not result:

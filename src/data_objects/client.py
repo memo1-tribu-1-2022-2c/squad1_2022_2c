@@ -1,6 +1,6 @@
 from typing import Type
 import requests
-from config import db, connect_and_return, try_commit
+from config import db, connect_and_return, try_commit, rollback
 
 
 CLIENTROUTE = "https://anypoint.mulesoft.com/mocking/api/v1/sources/exchange/assets/754f50e8-20d8-4223-bbdc-56d50131d0ae/clientes-psa/1.0.0/m/api/clientes"
@@ -40,7 +40,12 @@ class ClientData():
     def associate_client_and_product(client_id: int, version_id: int):
         args = (version_id, client_id,)
         cursor = get_cursor()
-        cursor.execute(f"INSERT INTO {association_db}(version, client) VALUES(%s, %s)", args)
+        try:
+
+            cursor.execute(f"INSERT INTO {association_db}(version, client) VALUES(%s, %s)", args)
+        except:
+            rollback()
+            raise Exception("Could not asociate client and version")
         try_commit()
 
     @staticmethod
@@ -50,6 +55,11 @@ class ClientData():
         '''
         args = (client_id,)
         cursor = get_cursor()
-        cursor.execute(f"SELECT version FROM {association_db} WHERE client=%s", args)
+        try:
+
+            cursor.execute(f"SELECT version FROM {association_db} WHERE client=%s", args)
+        except:
+            rollback()
+            raise Exception(f"Could not get products for client: {client_id}")
         try_commit()
         return cursor.fetchall()

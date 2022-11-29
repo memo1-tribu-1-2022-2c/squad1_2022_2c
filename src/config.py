@@ -46,3 +46,7 @@ def try_commit():
         db.commit()
     except:
         db.rollback()
+
+def rollback():
+    global db
+    db.rollback()

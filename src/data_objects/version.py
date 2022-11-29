@@ -1,4 +1,4 @@
-from config import db, connect_and_return, try_commit
+from config import db, connect_and_return, try_commit, rollback
 
 class VersionData():
 
@@ -10,7 +10,13 @@ class VersionData():
         self.renew_cursor()
         args = (version.number, version.state, version.product,)
         query = f"INSERT INTO {self.table} (numero, estado, producto) VALUES(%s, %s, %s)"
-        self.cursor.execute(query, args)
+        try:
+
+            self.cursor.execute(query, args)
+        except:
+            rollback()
+            raise Exception("Could not store new version")
+
         try_commit()
         self.cursor.execute("SELECT LASTVAL()")
         version.id = self.cursor.fetchone()[0]
@@ -20,7 +26,13 @@ class VersionData():
         self.renew_cursor()
         args = (product_id,)
         query = f"SELECT * FROM {self.table} WHERE producto=%s"
-        self.cursor.execute(query, args)
+        try:
+
+            self.cursor.execute(query, args)
+        except:
+            rollback()
+            raise Exception("Could not find product")
+
         try_commit()
         return self.cursor.fetchall()
 
@@ -28,7 +40,13 @@ class VersionData():
         self.renew_cursor()
         args = (version_id,)
         query = f"SELECT * FROM {self.table} WHERE id=%s"
-        self.cursor.execute(query, args)
+        try:
+
+            self.cursor.execute(query, args)
+        except:
+            rollback()
+            raise Exception(f"Could not find version: {version_id}")
+
         try_commit()
         return self.cursor.fetchone()
 
@@ -44,7 +62,12 @@ class VersionData():
                 SET numero=%s, estado=%s
                 WHERE id=%s
                 """
-        self.cursor.execute(query, args)
+        try:
+
+            self.cursor.execute(query, args)
+        except:
+            rollback()
+            raise Exception(f"Could not update version: {version.id}")
         try_commit()
 
     def renew_cursor(self):
