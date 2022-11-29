@@ -51,4 +51,5 @@ class ClientData():
         args = (client_id,)
         cursor = get_cursor()
         cursor.execute(f"SELECT version FROM {association_db} WHERE client=%s", args)
+        try_commit()
         return cursor.fetchall()

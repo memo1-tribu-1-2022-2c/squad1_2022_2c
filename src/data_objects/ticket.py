@@ -10,6 +10,7 @@ class TicktData():
         self.renew_cursor()
         self.cursor.execute(f"SELECT * FROM {self.table};")
         tickets = self.cursor.fetchall()
+        try_commit()
         return tickets
 
     def get_by_id(self, ticket_id : int):
@@ -17,6 +18,7 @@ class TicktData():
         get_query = f"SELECT * FROM {self.table} WHERE id = %s"
         self.cursor.execute(get_query, (ticket_id,))
         ticket = self.cursor.fetchone()
+        try_commit()
         return ticket
 
     def create(self, kwargs):

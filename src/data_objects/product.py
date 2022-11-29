@@ -43,7 +43,7 @@ class ProductData():
         params = (product_id, )
         self.cursor.execute(query, params)
         result = self.cursor.fetchone()
-        
+        try_commit()
         if not result:
             return None
         
