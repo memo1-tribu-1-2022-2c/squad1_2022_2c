@@ -1,6 +1,6 @@
 from typing import Type
 import requests
-from config import db, connect_and_return
+from config import db, connect_and_return, try_commit
 
 
 CLIENTROUTE = "https://anypoint.mulesoft.com/mocking/api/v1/sources/exchange/assets/754f50e8-20d8-4223-bbdc-56d50131d0ae/clientes-psa/1.0.0/m/api/clientes"
@@ -41,7 +41,7 @@ class ClientData():
         args = (version_id, client_id,)
         cursor = get_cursor()
         cursor.execute(f"INSERT INTO {association_db}(version, client) VALUES(%s, %s)", args)
-        db.commit()
+        try_commit()
 
     @staticmethod
     def get_all_products(client_id: int) -> list:

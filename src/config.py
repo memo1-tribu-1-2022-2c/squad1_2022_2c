@@ -38,4 +38,11 @@ def connect_and_return():
                         password="6WqrfY2A46IdtKIsn903Ek3jCxKu6hS0",
                         port="5432")
     return db
-    
+
+
+def try_commit():
+    global db
+    try:
+        db.commit()
+    except:
+        db.rollback()

@@ -1,4 +1,4 @@
-from config import db, connect_and_return
+from config import db, connect_and_return, try_commit
 
 class VersionData():
 
@@ -11,7 +11,7 @@ class VersionData():
         args = (version.number, version.state, version.product,)
         query = f"INSERT INTO {self.table} (numero, estado, producto) VALUES(%s, %s, %s)"
         self.cursor.execute(query, args)
-        db.commit()
+        try_commit()
         self.cursor.execute("SELECT LASTVAL()")
         version.id = self.cursor.fetchone()[0]
     
@@ -43,7 +43,7 @@ class VersionData():
                 WHERE id=%s
                 """
         self.cursor.execute(query, args)
-        db.commit()
+        try_commit()
 
     def renew_cursor(self):
         if self.cursor.closed:

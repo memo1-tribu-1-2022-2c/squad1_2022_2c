@@ -1,4 +1,4 @@
-from config import db, connect_and_return
+from config import db, connect_and_return, try_commit
 
 class ProductData():
 
@@ -20,7 +20,7 @@ class ProductData():
             self.cursor.execute("SELECT LASTVAL()")
             [new_id] = self.cursor.fetchone()
             product.change_id(new_id)
-            db.commit()
+            try_commit()
         else:
             raise Exception("Product has no versions associated")
 
@@ -34,7 +34,7 @@ class ProductData():
                     WHERE id=%s
                 """
         self.cursor.execute(query, args)
-        db.commit()
+        try_commit()
 
     def get_product_by_id(self, product_id: str) -> dict:
         self.renew_cursor()

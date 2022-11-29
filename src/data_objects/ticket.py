@@ -1,4 +1,4 @@
-from config import db, connect_and_return
+from config import db, connect_and_return, try_commit
 
 class TicktData():
     
@@ -26,7 +26,7 @@ class TicktData():
         kwargs['ticket_proyect_id'], kwargs['ticket_version_id'], kwargs['ticket_description'], kwargs['ticket_state'],\
         kwargs['ticket_person_in_charge'], kwargs['ticket_end_dt'])
         self.cursor.execute(insert_query, record_to_insert)
-        db.commit()
+        try_commit()
         self.cursor.execute(f"SELECT * FROM {self.table} ORDER BY id DESC LIMIT 1;")
         ticket = self.cursor.fetchone()
         return ticket
@@ -37,7 +37,7 @@ class TicktData():
         self.renew_cursor()
         query, id = self.find_query(kwargs)
         self.cursor.execute(query, id)
-        db.commit()
+        try_commit()
         return self.get_by_id(id)
         
     def find_query(kwargs):
