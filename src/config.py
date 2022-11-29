@@ -30,6 +30,7 @@ db = psycopg2.connect(database="soporte",
                         port="5432")
 
 def connect_and_return():
+    global db
     if db.closed:
         db = psycopg2.connect(database="soporte",
                         host="oregon-postgres.render.com",
