@@ -28,3 +28,13 @@ db = psycopg2.connect(database="soporte",
                         user="soporte_user",
                         password="6WqrfY2A46IdtKIsn903Ek3jCxKu6hS0",
                         port="5432")
+
+def connect_and_return():
+    if db.closed:
+        db = psycopg2.connect(database="soporte",
+                        host="oregon-postgres.render.com",
+                        user="soporte_user",
+                        password="6WqrfY2A46IdtKIsn903Ek3jCxKu6hS0",
+                        port="5432")
+    return db
+    

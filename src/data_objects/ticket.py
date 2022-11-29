@@ -1,4 +1,4 @@
-from config import db
+from config import db, connect_and_return
 
 class TicktData():
     
@@ -7,17 +7,20 @@ class TicktData():
         self.cursor = db.cursor()
 
     def get_all(self) -> list:
+        self.renew_cursor()
         self.cursor.execute(f"SELECT * FROM {self.table};")
         tickets = self.cursor.fetchall()
         return tickets
 
     def get_by_id(self, ticket_id : int):
+        self.renew_cursor()
         get_query = f"SELECT * FROM {self.table} WHERE id = %s"
         self.cursor.execute(get_query, (ticket_id,))
         ticket = self.cursor.fetchone()
         return ticket
 
     def create(self, kwargs):
+        self.renew_cursor()
         insert_query = f"INSERT INTO {self.table} (start_dt, title, client_id, proyect_id, version_id, description, state, person_in_charge, end_dt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
         record_to_insert = (kwargs['ticket_start_dt'], kwargs['ticket_title'], kwargs['ticket_client_id'],\
         kwargs['ticket_proyect_id'], kwargs['ticket_version_id'], kwargs['ticket_description'], kwargs['ticket_state'],\
@@ -31,6 +34,7 @@ class TicktData():
     def update(self, kwargs):
         update_query = """UPDATE tickets SET %s WHERE id = %s"""
         record_to_update = (kwargs['ticket_title'], kwargs['ticket'])
+        self.renew_cursor()
         query, id = self.find_query(kwargs)
         self.cursor.execute(query, id)
         db.commit()
@@ -44,3 +48,8 @@ class TicktData():
             if(i < len(kwargs.keys())):
                 query += ", "
         return query,id
+
+    def renew_cursor(self):
+        if self.cursor.closed:
+            data_base = connect_and_return()
+            self.cursor = data_base.cursor()
