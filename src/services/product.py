@@ -5,7 +5,13 @@ class ProductService():
 
     
     def search_product(self, product_id: str):
-        return Product.search_product(product_id).to_json()
+
+        product = Product.search_product(product_id)
+
+        if not product: 
+            raise Exception("Product not found")
+
+        return product.to_json()
 
     
     def new_product(self, **kwargs):
