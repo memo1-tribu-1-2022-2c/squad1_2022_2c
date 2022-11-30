@@ -2,7 +2,7 @@ from flask_restful import Resource
 from flask_apispec.views import MethodResource
 from flask_apispec import doc, use_kwargs, marshal_with
 from marshmallow import Schema, fields
-
+from flask_cors import cross_origin
 from services.version import VersionService
 
 version_service = VersionService()
@@ -49,6 +49,7 @@ class VersionResource(MethodResource, Resource):
     @use_kwargs(VersionCreate)
     @marshal_with(VersionResponse)
     @marshal_with(VersionErrorSchema, code='404')
+    @cross_origin()
     def post(self, **kwargs):
         try:
             return version_service.store_new_version(**kwargs)
@@ -61,6 +62,7 @@ class VersionResource(MethodResource, Resource):
     @use_kwargs(VersionModifySchema)
     @marshal_with(VersionResponse)
     @marshal_with(VersionErrorSchema, code='404')
+    @cross_origin()
     def patch(self, **kwargs):
         
         try:

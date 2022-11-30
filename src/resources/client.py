@@ -5,6 +5,8 @@ from marshmallow import Schema, fields
 from services.client import ClientService
 from .product import ProductResponse
 
+from flask_cors import cross_origin
+
 client_service = ClientService()
 
 parser = reqparse.RequestParser()
@@ -59,6 +61,7 @@ class ClientWithVersionsResource(MethodResource, Resource):
     @use_kwargs(ClientsNewProduct)
     @marshal_with(ClientsNewProduct)
     @marshal_with(ClientNotFound, code='404')
+    @cross_origin()
     def post(self, **kwargs):
         try:
             client_service.add_product(**kwargs)

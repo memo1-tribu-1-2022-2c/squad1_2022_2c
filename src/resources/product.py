@@ -4,6 +4,8 @@ from flask_apispec import doc, use_kwargs, marshal_with
 from marshmallow import Schema, fields
 from services.product import ProductService
 from .version import VersionResponse
+from flask_cors import cross_origin
+
 
 product_service = ProductService()
 
@@ -50,6 +52,7 @@ class ProductResource(MethodResource, Resource):
     @use_kwargs(ProductCreate)
     @marshal_with(ProductResponse)
     @marshal_with(ProductErrorSchema, code='404')
+    @cross_origin()
     def post(self, **kwargs):
         try:
             new_product = product_service.new_product(**kwargs)
@@ -64,6 +67,7 @@ class ProductResource(MethodResource, Resource):
     @use_kwargs(ProductModifySchema)
     @marshal_with(ProductResponse)
     @marshal_with(ProductErrorSchema, code='404')
+    @cross_origin()
     def patch(self, **kwargs):
         try:
             return product_service.update_product(**kwargs)
