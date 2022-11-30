@@ -1,4 +1,4 @@
-from config import db
+from config import db, connect_and_return, try_commit, rollback
 
 class ProductData():
 
@@ -13,32 +13,57 @@ class ProductData():
         return values, params
 
     def store_new_product(self, product):
+        self.renew_cursor()
         if product.can_be_persisted():
             values, params = self.serialize_product(product)
-            self.cursor.execute(f"INSERT INTO {self.table} VALUES{values}", params)
-            [new_id] = self.cursor.fetchone()
-            product.id = new_id
-            db.commit()
-        else:
-            values, params = self.serialize_product(product)
-            self.cursor.execute(f"INSERT INTO {self.table} (nombre) VALUES{values}", params)
-            db.commit()
+            try:
+
+                self.cursor.execute(f"INSERT INTO {self.table}(nombre) VALUES{values}", params)
+            except:
+                rollback()
+                raise Exception("Could not create new product")
+
             self.cursor.execute("SELECT LASTVAL()")
-            product.id = self.cursor.fetchone()[0]
-            #raise Exception("Product has no versions associated")
+            [new_id] = self.cursor.fetchone()
+            product.change_id(new_id)
+            try_commit()
+        else:
+            raise Exception("Product has no versions associated")
 
         
 
     def update_product(self, product):
-        pass
+        self.renew_cursor()
+        args = (product.name, product.id,)
+        query = f"""UPDATE {self.table}
+                    SET nombre=%s
+                    WHERE id=%s
+                """
+        try:
+
+            self.cursor.execute(query, args)
+        except:
+            rollback()
+            raise Exception(f"Could not update product: {product.id}")
+
+        try_commit()
 
     def get_product_by_id(self, product_id: str) -> dict:
+        self.renew_cursor()
         query = f"SELECT * FROM {self.table} WHERE id=%s"
         
         params = (product_id, )
-        self.cursor.execute(query, params)
+        try:
+
+            self.cursor.execute(query, params)
+
+        except:
+            rollback()
+            raise Exception(f"Could not get product: {product_id}")
+            
         result = self.cursor.fetchone()
-        if len(result) == 0:
+        try_commit()
+        if not result:
             return None
         
         return {
@@ -46,5 +71,7 @@ class ProductData():
             'name': result[1]
         }
 
-    def get_products_by_name(self, product_name: str) -> list:
-        pass
+    def renew_cursor(self):
+        if self.cursor.closed:
+            data_base = connect_and_return()
+            self.cursor = data_base.cursor()

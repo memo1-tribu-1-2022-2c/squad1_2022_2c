@@ -5,3 +5,4 @@ flask_apispec
 marshmallow
 Psycopg2-binary
 behave
+flask_cors

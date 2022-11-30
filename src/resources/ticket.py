@@ -5,6 +5,8 @@ from marshmallow import Schema, fields, base
 from config import psycopg2
 from services.ticket import TicketService
 
+from flask_cors import cross_origin
+
 ticket_service = TicketService()
 
 class TicketResponse(Schema):
@@ -66,6 +68,7 @@ class TicketResource(MethodResource, Resource):
     @doc(description="Creates a new ticket", tags=['Tickets'])
     @use_kwargs(TicketCreate, location=('json'))
     @marshal_with(TicketResponse)
+    @cross_origin()
     def post(self, **kwargs):
         '''
             Creates a new ticket
@@ -83,6 +86,7 @@ class TicketSearchModify(MethodResource, Resource):
     @doc(description="Modify a ticket", tags=['Tickets'])
     @use_kwargs(TicketUpdate, location=('json'))
     @marshal_with(TicketResponse)
+    @cross_origin()
     def patch(self, **kwargs):
         '''
             Update a ticket

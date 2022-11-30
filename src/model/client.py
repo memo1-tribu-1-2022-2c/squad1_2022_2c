@@ -1,5 +1,7 @@
 from typing import Type
 from data_objects.client import ClientData
+from .product import Version
+
 
 IDKEY = 'id'
 REASONKEYFROM = 'razon social'
@@ -48,4 +50,27 @@ class Client():
     def get_all() -> list:
         values = ClientData.get_all();
 
-        return list(map(lambda dict: Client.from_json(dict), values)) 
+        return list(map(lambda dict: Client.from_json(dict), values))
+
+    
+    def associate(self, version_id: int):
+        ClientData.associate_client_and_product(self.id, version_id)
+
+    def get_all_versions(self):
+        '''
+            Returns all versions that the client has associated
+        '''
+        try:
+            version_ids = ClientData.get_all_products(self.id)
+        except:
+            raise Exception(f"Client: {self.id} was not found")
+
+        try:
+            productos = Version.retrieve_all_by_ids(version_ids)
+        except:
+            raise Exception("Some issue happened")
+
+        return {
+            'client': self.to_json(),
+            'products': [producto.to_json() for producto in productos]
+        }
