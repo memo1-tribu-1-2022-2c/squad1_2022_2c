@@ -4,10 +4,11 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec import APISpec
 from flask_apispec.extension import FlaskApiSpec
 import psycopg2
-
+from flask_cors import CORS
 
 app = Flask(__name__)
 api = Api(app)
+CORS(app)
 docs = FlaskApiSpec(app)
 
 app.config.update({
