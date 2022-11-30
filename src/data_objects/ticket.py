@@ -35,7 +35,7 @@ class TicktData():
         self.renew_cursor()
         insert_query = f"INSERT INTO {self.table} (start_dt, title, client_id, proyect_id, version_id, description, state, person_in_charge, end_dt) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
         record_to_insert = (kwargs['ticket_start_dt'], kwargs['ticket_title'], kwargs['ticket_client_id'],\
-        kwargs['ticket_proyect_id'], kwargs['ticket_version_id'], kwargs['ticket_description'], kwargs['ticket_state'],\
+        kwargs['ticket_project_id'], kwargs['ticket_version_id'], kwargs['ticket_description'], kwargs['ticket_state'],\
         kwargs['ticket_person_in_charge'], kwargs['ticket_end_dt'])
         try:
 
