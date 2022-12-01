@@ -23,13 +23,16 @@ class TicketCreate(Schema):
     ticket_state = fields.Str(required=True)
     ticket_person_in_charge = fields.Str(required=True)
     ticket_end_dt = fields.Date(required=True)
+    ticket_criticity = fields.Str(required=True)
 
 class TicketUpdate(Schema):
     ticket_id = fields.String(required=True)
     ticket_start_dt = fields.Date(required=False)
     ticket_title = fields.Str(required=False)
+
     ticket_client_id = fields.Int(required=False)
     ticket_project_id = fields.Int(required=False)
+
     ticket_version_id = fields.Int(required=False)
     ticket_description = fields.Str(required=False)
     ticket_state = fields.Str(required=False)
@@ -38,6 +41,25 @@ class TicketUpdate(Schema):
 
 class MultipleTicketsResponse(Schema):
     tickets = fields.List(fields.Nested(TicketResponse))
+
+class TicketQuery(Schema):
+    id = fields.Str()
+    start_dt = fields.Date()
+    title = fields.Str()
+    client_id = fields.Str()
+    project_id = fields.Str()
+    version_id = fields.Str()
+    description = fields.Str()
+    state = fields.Str()
+    person_in_charge = fields.Str()
+    end_detail = fields.Str()
+    end_dt = fields.Str()
+
+class MultipleTicketsQuery(Schema):
+    tickets = fields.List(fields.Nested(TicketQuery))
+
+class ClientNotFoundSchema(Schema):
+    error = fields.Str()
 
 class TicketSearchResource(MethodResource, Resource):
 
@@ -55,7 +77,7 @@ class TicketSearchResource(MethodResource, Resource):
 class TicketResource(MethodResource, Resource):
 
     @doc(description="returns all tickets", tags=["Tickets"])
-    @marshal_with(MultipleTicketsResponse)
+    @marshal_with(MultipleTicketsQuery)
     def get(self):
         '''
             Returns all tickets
@@ -99,3 +121,16 @@ class TicketSearchModify(MethodResource, Resource):
         return {
             'ticket': kwargs['ticket_id']
         }
+
+class TicketByClient(MethodResource, Resource):
+
+    @doc(description="Returns all tickets by client id", tags=["Tickets"])
+    @marshal_with(MultipleTicketsQuery)
+    @marshal_with(ClientNotFoundSchema, code='404')
+    def get(self, client_id):
+        try:
+            return {'tickets': ticket_service.get_all_tickets_from(client_id)}
+        except:
+            return {
+                'error': f"Client {client_id} no fue encontrado"
+            }
