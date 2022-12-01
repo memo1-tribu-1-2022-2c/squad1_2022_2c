@@ -34,6 +34,7 @@ class TicketService():
             return ticket.get_id()
 
 
+
     def __validate_project(self,kwargs):
         try:
             actual_ticket = self.get_ticket(kwargs['ticket'])
