@@ -29,6 +29,10 @@ class TicketUpdate(Schema):
     ticket_id = fields.String(required=True)
     ticket_start_dt = fields.Date(required=False)
     ticket_title = fields.Str(required=False)
+
+    ticket_client_id = fields.Int(required=False)
+    ticket_project_id = fields.Int(required=False)
+
     ticket_version_id = fields.Int(required=False)
     ticket_description = fields.Str(required=False)
     ticket_state = fields.Str(required=False)

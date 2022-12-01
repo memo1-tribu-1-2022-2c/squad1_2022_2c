@@ -5,7 +5,9 @@ ticket_db = TicktData()
 class Ticket():
 
     def __init__(self, id: int, start_dt: str, title: str, client_id: str, project_id: int,\
+
     version_id: int, description: str, state: str, person_in_charge: str, end_dt: str, criticity: str):
+
         self.id = id
         self.start_dt = start_dt
         self.title = title
