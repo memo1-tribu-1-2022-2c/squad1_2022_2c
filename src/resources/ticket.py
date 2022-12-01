@@ -23,6 +23,7 @@ class TicketCreate(Schema):
     ticket_state = fields.Str(required=True)
     ticket_person_in_charge = fields.Str(required=True)
     ticket_end_dt = fields.Date(required=True)
+    ticket_criticity = fields.Str(required=True)
 
 class TicketUpdate(Schema):
     ticket_id = fields.String(required=True)

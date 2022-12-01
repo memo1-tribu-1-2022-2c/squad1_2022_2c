@@ -5,7 +5,7 @@ ticket_db = TicktData()
 class Ticket():
 
     def __init__(self, id: int, start_dt: str, title: str, client_id: str, project_id: int,\
-    version_id: int, description: str, state: str, person_in_charge: str, end_dt: str):
+    version_id: int, description: str, state: str, person_in_charge: str, end_dt: str, criticity: str):
         self.id = id
         self.start_dt = start_dt
         self.title = title
@@ -17,6 +17,7 @@ class Ticket():
         self.person_in_charge = person_in_charge
         self.end_dt = end_dt
         self.end_detail = ''
+        self.criticity = criticity
 
     def to_json(self):
         return {
@@ -40,7 +41,7 @@ class Ticket():
     def get_all_by_client(client_id):
         tickets = ticket_db.get_by_client(client_id)
         tickets_without_detail = [
-            Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10])
+            Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10], ticket[11])
             for ticket in tickets
         ]
         for index, ticket in enumerate(tickets_without_detail):
@@ -57,13 +58,13 @@ class Ticket():
         tickets = ticket_db.get_all()
         all_tickets = []
         for ticket in tickets:
-            all_tickets.append(Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10]))
+            all_tickets.append(Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10], ticket[11]))
         return all_tickets
     
     @staticmethod
     def from_id(ticket_id: int):
         ticket = ticket_db.get_by_id(ticket_id)
-        pre_ticket = Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10])
+        pre_ticket = Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10], ticket[11])
         if pre_ticket.state == "CERRADO":
             pre_ticket.end_detail = ticket[9]
         return pre_ticket
@@ -71,9 +72,9 @@ class Ticket():
     @staticmethod
     def create(kwargs):
         ticket = ticket_db.create(kwargs)
-        return Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10])
+        return Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10], ticket[11])
 
     def update(kwargs):
         ticket = ticket_db.update(kwargs)
-        return Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10])
+        return Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10], ticket[11])
     
