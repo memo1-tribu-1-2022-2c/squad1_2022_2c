@@ -37,6 +37,25 @@ class TicketUpdate(Schema):
 class MultipleTicketsResponse(Schema):
     tickets = fields.List(fields.Nested(TicketResponse))
 
+class TicketQuery(Schema):
+    id = fields.Str()
+    start_dt = fields.Date()
+    title = fields.Str()
+    client_id = fields.Str()
+    project_id = fields.Str()
+    version_id = fields.Str()
+    description = fields.Str()
+    state = fields.Str()
+    person_in_charge = fields.Str()
+    end_detail = fields.Str()
+    end_dt = fields.Str()
+
+class MultipleTicketsQuery(Schema):
+    tickets = fields.List(fields.Nested(TicketQuery))
+
+class ClientNotFoundSchema(Schema):
+    error = fields.Str()
+
 class TicketSearchResource(MethodResource, Resource):
 
     @doc(description="Returns a ticket by its Id", tags=["Tickets"])
@@ -97,3 +116,16 @@ class TicketSearchModify(MethodResource, Resource):
         return {
             'ticket': kwargs['ticket_id']
         }
+
+class TicketByClient(MethodResource, Resource):
+
+    @doc(description="Returns all tickets by client id", tags=["Tickets"])
+    @marshal_with(MultipleTicketsQuery)
+    @marshal_with(ClientNotFoundSchema, code='404')
+    def get(self, client_id):
+        try:
+            return {'tickets': ticket_service.get_all_tickets_from(client_id)}
+        except:
+            return {
+                'error': f"Client {client_id} no fue encontrado"
+            }

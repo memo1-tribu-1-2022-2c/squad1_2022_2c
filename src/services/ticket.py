@@ -11,6 +11,10 @@ class TicketService():
     def __init__(self):
         self.cursor = db.cursor()
 
+    def get_all_tickets_from(self, client_id):
+        tickets = Ticket.get_all_by_client(client_id)
+        return tickets
+
     def get_all_tickets(self):
         tickets = Ticket.get_all()
         values = [{'ticket_id': value.get_id(), 'ticket_title': value.get_title()} for value in tickets]
