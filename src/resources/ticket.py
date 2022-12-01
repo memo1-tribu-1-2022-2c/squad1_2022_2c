@@ -35,6 +35,7 @@ class TicketUpdate(Schema):
     end_dt = fields.Date(required=False)
     criticity = fields.Str(required=False)
 
+
 class TicketQuery(Schema):
     id = fields.Str()
     start_dt = fields.Date()
