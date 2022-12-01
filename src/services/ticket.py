@@ -22,46 +22,46 @@ class TicketService():
 
     def get_ticket(self,ticket_id):
         ticket = Ticket.from_id(ticket_id)
-        return {'ticket_id': ticket.get_id(), 'ticket_title': ticket.get_title()}
+        return ticket.to_json()
 
 
     def create_ticket(self, kwargs):
         ticket = Ticket.create(kwargs)
-        return ticket.get_id()
+        return ticket.to_json()
 
 
 
-    def __validate_project(self,kwargs):
+    def __validate_project(self, ticket_id, kwargs):
         try:
-            actual_ticket = self.get_ticket(kwargs['ticket'])
+            actual_ticket = self.get_ticket(ticket_id)
             proyect = requests.get(f"https://squad2-2022-2c.herokuapp.com/api/v1/projects/{kwargs['ticket_project_id']}").json()
         
-            if(proyect['clientId'] != actual_ticket.client_id):
+            if(proyect['clientId'] != actual_ticket['client_id']):
                 raise ValueError("Error el nuevo proyecto no está asociado al mismo cliente")
         except ValueError:
             return  ERROR_INVALID_TICKET      
 
-    def __validate_version(self,kwargs):
+    def __validate_version(self, ticket_id, kwargs):
         try:
-            actual_ticket = self.get_ticket(kwargs['ticket'])
+            actual_ticket = self.get_ticket(ticket_id)
             version = requests.get(f"https://squad2-2022-2c.herokuapp.com/api/v1/versions/{kwargs['ticket_version_id']}").json()
         
-            if(version['proyect_id'] != actual_ticket.proyect_id):
+            if(version['projectId'] != actual_ticket['project_id']):
                 raise ValueError("Error la versión no está asociada al mismo proyecto")
         except ValueError:
             return  ERROR_INVALID_TICKET      
 
-    def __validate_args(self,kwargs):
-        validation = self.__validate_project(kwargs)
+    def __validate_args(self, ticket_id, kwargs):
+        validation = self.__validate_project(ticket_id, kwargs)
         if(validation == ERROR_INVALID_TICKET):
             return INVALID_TICKET
-        return self.__validate_version(kwargs)
+        return self.__validate_version(ticket_id, kwargs)
             
 
 
-    def update_ticket(self, kwargs):
-        validation = self.validate_args(kwargs)
-        if(validation == ERROR_INVALID_TICKET):
-            return INVALID_TICKET
-        ticket = Ticket.update(kwargs)
-        return self.get_ticket(ticket.get_id())
+    def update_ticket(self, ticket_id, kwargs):
+        #validation = self.__validate_args(ticket_id, kwargs)
+        #if(validation == ERROR_INVALID_TICKET):
+        #    return INVALID_TICKET
+        ticket = Ticket.update(ticket_id, kwargs)
+        return ticket.to_json()

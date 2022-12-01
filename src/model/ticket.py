@@ -81,7 +81,9 @@ class Ticket():
         ticket = ticket_db.create(kwargs)
         return Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10], ticket[11])
 
-    def update(kwargs):
-        ticket = ticket_db.update(kwargs)
-        return Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10], ticket[11])
-    
+    def update(ticket_id, kwargs):
+        ticket = ticket_db.update(ticket_id, kwargs)
+        pre_ticket = Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10], ticket[11])
+        if pre_ticket.state == "CERRADO":
+            pre_ticket.end_detail = ticket[9]
+        return pre_ticket
