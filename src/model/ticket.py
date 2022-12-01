@@ -31,6 +31,7 @@ class Ticket():
             'version_id': self.version_id,
             'description': self.description,
             'state': self.state,
+            'criticity': self.criticity,
             'person_in_charge': self.person_in_charge,
             'end_detail': self.end_detail,
             'end_dt': self.end_dt

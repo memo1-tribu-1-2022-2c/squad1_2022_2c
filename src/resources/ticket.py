@@ -50,6 +50,7 @@ class TicketQuery(Schema):
     project_id = fields.Str()
     version_id = fields.Str()
     description = fields.Str()
+    criticity = fields.Str()
     state = fields.Str()
     person_in_charge = fields.Str()
     end_detail = fields.Str()
