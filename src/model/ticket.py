@@ -59,7 +59,11 @@ class Ticket():
         all_tickets = []
         for ticket in tickets:
             all_tickets.append(Ticket(ticket[0], ticket[1], ticket[2], ticket[3], ticket[4], ticket[5], ticket[6], ticket[7], ticket[8], ticket[10], ticket[11]))
-        return all_tickets
+        for index, ticket in enumerate(all_tickets):
+            if ticket.state == "CERRADO":
+                ticket.end_detail = tickets[index][9]
+        
+        return [ticket.to_json() for ticket in all_tickets]
     
     @staticmethod
     def from_id(ticket_id: int):

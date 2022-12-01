@@ -17,8 +17,8 @@ class TicketService():
 
     def get_all_tickets(self):
         tickets = Ticket.get_all()
-        values = [{'ticket_id': value.get_id(), 'ticket_title': value.get_title()} for value in tickets]
-        return values
+        
+        return tickets
 
     def get_ticket(self,ticket_id):
         ticket = Ticket.from_id(ticket_id)

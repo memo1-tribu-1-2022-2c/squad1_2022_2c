@@ -73,7 +73,7 @@ class TicketSearchResource(MethodResource, Resource):
 class TicketResource(MethodResource, Resource):
 
     @doc(description="returns all tickets", tags=["Tickets"])
-    @marshal_with(MultipleTicketsResponse)
+    @marshal_with(MultipleTicketsQuery)
     def get(self):
         '''
             Returns all tickets
