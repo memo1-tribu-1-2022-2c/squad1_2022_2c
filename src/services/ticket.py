@@ -26,8 +26,7 @@ class TicketService():
 
 
     def create_ticket(self, kwargs):
-        id = kwargs['ticket_project_id']
-        proyect = requests.get(f"https://squad2-2022-2c.herokuapp.com/api/v1/projects/{id}").json()
+        proyect = requests.get(f"https://squad2-2022-2c.herokuapp.com/api/v1/projects/{kwargs['ticket_project_id']}").json()
         if(proyect['clientId'] != kwargs['ticket_client_id'] or proyect['versionId'] != kwargs['ticket_version_id']):
             return -1
         else:
