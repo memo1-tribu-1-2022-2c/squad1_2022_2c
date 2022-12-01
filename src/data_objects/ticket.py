@@ -1,4 +1,5 @@
 from config import db, connect_and_return, try_commit, rollback
+import datetime
 
 class TicktData():
     
@@ -62,27 +63,28 @@ class TicktData():
         ticket = self.cursor.fetchone()
         return ticket
     
-    def update(self, kwargs):
-        update_query = """UPDATE tickets SET %s WHERE id = %s"""
-        record_to_update = (kwargs['ticket_title'], kwargs['ticket'])
+    def update(self, ticket_id, kwargs):
         self.renew_cursor()
-        query, id = self.find_query(kwargs)
+        query= self.find_query(ticket_id, kwargs)
         try:
-            self.cursor.execute(query, id)
+            print(query)
+            self.cursor.execute(query)
         except:
             rollback()
             raise Exception("Could not update ticket")
         try_commit()
-        return self.get_by_id(id)
+        return self.get_by_id(ticket_id)
         
-    def find_query(kwargs):
-        query = ""
-        id = kwargs.pop('ticket_id')
-        for i, label, value in kwargs.items:
+    def find_query(self, ticket_id, kwargs):
+        query = "UPDATE tickets SET "
+        for i, (label, value) in enumerate(kwargs.items()):
+            value = f"'{value}'" if type(value) == str else value
+            value = f"'{str(value)}'" if type(value) == datetime.date else value
             query += f"{label}={value}"
-            if(i < len(kwargs.keys())):
+            if(i < len(kwargs.keys()) - 1):
                 query += ", "
-        return query,id
+        query += f" WHERE id = {ticket_id}"
+        return query
 
     def renew_cursor(self):
         if self.cursor.closed:
