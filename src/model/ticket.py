@@ -4,13 +4,13 @@ ticket_db = TicktData()
 
 class Ticket():
 
-    def __init__(self, id: int, start_dt: str, title: str, client_id: str, proyect_id: int,\
+    def __init__(self, id: int, start_dt: str, title: str, client_id: str, project_id: int,\
     version_id: int, description: str, state: str, person_in_charge: str, end_dt: str):
         self.id = id
         self.start_dt = start_dt
         self.title = title
         self.client_id = client_id
-        self.proyect_id = proyect_id
+        self.project_id = project_id
         self.version_id = version_id
         self.description = description
         self.state = state
