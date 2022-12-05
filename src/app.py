@@ -73,10 +73,7 @@ docs.register(ProductSearchResource)
 docs.register(VersionResource)
 docs.register(VersionSearchResource)
 
-'''
-    Employees docs
-'''
-docs.register(EmployeeResource)
+
 
 if __name__ == "__main__":
     app.run(port=8000, debug=True)
