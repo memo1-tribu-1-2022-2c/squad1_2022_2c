@@ -41,6 +41,15 @@ class Product():
         return self.versions
 
     @staticmethod
+    def get_products():
+        products = products_db.get_products();
+
+        return [{
+            'product': product[1],
+            'product_id': product[0]
+        } for product in products]
+
+    @staticmethod
     def search_product(product_id: str):
         result = products_db.get_product_by_id(product_id)
         if not result:

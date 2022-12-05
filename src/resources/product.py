@@ -26,7 +26,12 @@ class ProductCreate(Schema):
     product = fields.Str(default="Some product name")
     versions = fields.List(fields.Nested(ProductVersion))
 
+class ProductSchema(Schema):
+    product = fields.Str()
+    product_id = fields.Str()
 
+class ProductList(Schema):
+    products = fields.List(fields.Nested(ProductSchema))
 
 class ProductErrorSchema(Schema):
     error = fields.Str(default="Product not found")
@@ -75,3 +80,8 @@ class ProductResource(MethodResource, Resource):
             return {
                 'error': exception.args[0]
             }, '404'
+
+    @doc(description="Returns a list with the products", tags=["Products"])
+    @marshal_with(ProductList)
+    def get(self):
+        return product_service.get_products()

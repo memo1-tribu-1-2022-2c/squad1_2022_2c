@@ -13,6 +13,8 @@ class ProductService():
 
         return product.to_json()
 
+    def get_products(self):
+        return {'products': Product.get_products()}
     
     def new_product(self, **kwargs):
         name = kwargs['product']

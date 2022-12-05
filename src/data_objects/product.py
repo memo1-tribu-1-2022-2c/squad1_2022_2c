@@ -71,6 +71,17 @@ class ProductData():
             'name': result[1]
         }
 
+    def get_products(self):
+        query = f"SELECT * FROM {self.table}"
+        self.renew_cursor()
+        try:
+            self.cursor.execute(query)
+        except:
+            rollback()
+            raise Exception("Could not retrieve products")
+        
+        return self.cursor.fetchall()
+
     def renew_cursor(self):
         if self.cursor.closed:
             data_base = connect_and_return()
