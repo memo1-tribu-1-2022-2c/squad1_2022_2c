@@ -39,7 +39,7 @@ class Ticket():
 
     def get_id(self):
         return self.id
-
+#comentario
     @staticmethod
     def get_all_by_client(client_id):
         tickets = ticket_db.get_by_client(client_id)
