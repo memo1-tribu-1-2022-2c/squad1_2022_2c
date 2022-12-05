@@ -3,7 +3,7 @@ from resources.ticket import TicketResource, TicketSearchResource, TicketSearchM
 from resources.client import ClientSearchResource, ClientDumpResource, ClientWithVersionsResource
 from resources.product import ProductResource, ProductSearchResource
 from resources.version import VersionResource, VersionSearchResource
-
+from resources.employees import EmployeeResource
 
 # Add resources to API
 
@@ -38,6 +38,11 @@ api.add_resource(ProductResource, '/product')
 api.add_resource(VersionSearchResource, '/version/<int:product_id>')
 api.add_resource(VersionResource, '/version')
 
+'''
+    Employees
+'''
+api.add_resource(EmployeeResource, '/employees')
+
 # Register Resources for swagger
 
 '''
@@ -67,6 +72,11 @@ docs.register(ProductSearchResource)
 '''
 docs.register(VersionResource)
 docs.register(VersionSearchResource)
+
+'''
+    Employees docs
+'''
+docs.register(EmployeeResource)
 
 if __name__ == "__main__":
     app.run(port=8000, debug=True)
